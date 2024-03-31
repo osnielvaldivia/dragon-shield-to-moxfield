@@ -50,19 +50,13 @@
 
           if (match) {
             const name = match[1];
-
             const sanitizeName = line.replace('"' + name + '",', '');
             const data = sanitizeName.split(',');
-
-            if (name == 'Dispel') {
-              console.log(name);
-              console.log(sanitizeName);
-              console.log(data);
-            }
 
             if (data[0] == 'Quantity') {
               continue;
             }
+            
             const convertedData = {
               [moxfieldHeaders[0]]: data[0],
               [moxfieldHeaders[1]]: '"' + name + '"',
@@ -82,10 +76,11 @@
         }
 
         let convertedCSV = moxfieldHeaders.join(',') + '\n';
+        
         for (let data of convertedLines) {
           convertedCSV += Object.values(data).join(',') + '\n';
         }
-
+        
         return convertedCSV;
       }
 
