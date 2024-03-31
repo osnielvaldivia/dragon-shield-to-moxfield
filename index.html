@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DragonShield to Moxfield</title>
+  </head>
+  <body>
+    <h2>DragonShield to Moxfield conversion</h2>
+    <input type="file" id="fileInput" accept=".csv" /><br /><br />
+    <button onclick="convertToCSV()">Convert to Moxfield CSV</button>
+
+    <script>
+      function convertToCSV() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        if (!file) {
+          alert('Please select a file.');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const text = event.target.result;
+          const convertedCSV = convertCSV(text);
+          downloadCSV(convertedCSV);
+        };
+        reader.readAsText(file);
+      }
+
+      function convertCSV(csvText) {
+        const lines = csvText.split('\n');
+        console.log(lines);
+        const moxfieldHeaders = [
+          'Count',
+          'Name',
+          'Edition',
+          'Condition',
+          'Language',
+          'Foil',
+          'Collector Number',
+          'Alter',
+          'Proxy',
+          'Purchase Price',
+        ];
+        const convertedLines = [];
+
+        for (let line of lines) {
+          const match = line.match(/"([^"]*)"/);
+
+          if (match) {
+            const name = match[1];
+
+            const sanitizeName = line.replace('"' + name + '",', '');
+            const data = sanitizeName.split(',');
+
+            if (name == 'Dispel') {
+              console.log(name);
+              console.log(sanitizeName);
+              console.log(data);
+            }
+
+            if (data[0] == 'Quantity') {
+              continue;
+            }
+            const convertedData = {
+              [moxfieldHeaders[0]]: data[0],
+              [moxfieldHeaders[1]]: '"' + name + '"',
+              [moxfieldHeaders[2]]: data[2],
+              [moxfieldHeaders[3]]: moxfieldCondition(data[6]),
+              [moxfieldHeaders[4]]: data[7],
+              [moxfieldHeaders[5]]: moxfieldFoil(data[5]),
+              [moxfieldHeaders[6]]: '',
+              [moxfieldHeaders[7]]: '',
+              [moxfieldHeaders[8]]: '',
+              [moxfieldHeaders[9]]: data[4],
+            };
+            convertedLines.push(convertedData);
+          } else {
+            //no matches found
+          }
+        }
+
+        let convertedCSV = moxfieldHeaders.join(',') + '\n';
+        for (let data of convertedLines) {
+          convertedCSV += Object.values(data).join(',') + '\n';
+        }
+
+        return convertedCSV;
+      }
+
+      function moxfieldCondition(dragonShieldCondition) {
+        if (dragonShieldCondition == 'NearMint') {
+          return 'NM';
+        } else if (dragonShieldCondition == 'LightlyPlayed') {
+          return 'LP';
+        } else if (dragonShieldCondition == 'HeavilyPlayed') {
+          return 'HP';
+        }
+        return dragonShieldCondition;
+      }
+
+      function moxfieldFoil(dragonShieldFoil) {
+        if (dragonShieldFoil === 'true') {
+          return 'foil';
+        }
+        return '';
+      }
+
+      function downloadCSV(csvContent) {
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'moxfield.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    </script>
+  </body>
+</html>
