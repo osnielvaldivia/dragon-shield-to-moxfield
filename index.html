@@ -52,10 +52,10 @@
             const sanitizeName = line.replace('"' + name + '",', '');
             const data = sanitizeName.split(',');
 
-            if (data[0] == 'Quantity') {
+            if (data[0] == 'Quantity' || backsideCards(name)) {
               continue;
             }
-            
+
             const convertedData = {
               [moxfieldHeaders[0]]: data[0],
               [moxfieldHeaders[1]]: '"' + name + '"',
@@ -75,12 +75,27 @@
         }
 
         let convertedCSV = moxfieldHeaders.join(',') + '\n';
-        
+
         for (let data of convertedLines) {
           convertedCSV += Object.values(data).join(',') + '\n';
         }
-        
+
         return convertedCSV;
+      }
+
+      function backsideCards(name) {
+        // For some reason, DragonShield includes the backside of cards as an entry in your collection export
+        //    which then causes a duplicate importing to Moxfield
+        if (
+          name === 'Liliana, Defiant Necromancer' ||
+          name === 'Chandra, Roaring Flame' ||
+          name === 'Gideon, Battle-Forged' ||
+          name === 'Jace, Telepath Unbound' ||
+          name === 'Nissa, Sage Animist'
+        ) {
+          return true;
+        }
+        return false;
       }
 
       function moxfieldCondition(dragonShieldCondition) {
