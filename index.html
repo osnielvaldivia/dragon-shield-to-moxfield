@@ -4,12 +4,95 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DragonShield to Moxfield</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #6a0dad;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .containerBlock {
+        display: block;
+      }
+
+      .container {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 600px;
+        margin-top: 20px;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      h3 {
+        color: #8d38ff;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+
+      input[type='file'] {
+        color: transparent;
+      }
+
+      .button {
+        text-align: center;
+        display: block;
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: none;
+        background-color: #8d38ff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-sizing: border-box;
+        text-align-last: center;
+      }
+
+      .button:hover {
+        background-color: #6a0dad;
+      }
+
+      .button:focus {
+        outline: none;
+      }
+    </style>
   </head>
   <body>
-    <h2>DragonShield to Moxfield conversion</h2>
-    <input type="file" id="fileInput" accept=".csv" /><br /><br />
-    <button onclick="convertToCSV()">Convert to Moxfield CSV</button>
-
+    <div class="containerBlock">
+      <h2>DragonShield to Moxfield csv tool</h2>
+      <div class="container">
+        <!-- Container element -->
+        <h3>Select your exported DragonShield csv</h3>
+        <input
+          title=" "
+          class="button"
+          type="file"
+          id="fileInput"
+          accept=".csv"
+        /><br /><br />
+        <button class="button" onclick="convertToCSV()">
+          Convert to Moxfield CSV
+        </button>
+      </div>
+    </div>
     <script>
       function convertToCSV() {
         const fileInput = document.getElementById('fileInput');
