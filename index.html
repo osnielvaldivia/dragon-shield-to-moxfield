@@ -160,15 +160,26 @@
         const convertedLines = [];
 
         for (let line of lines) {
+          let hasDoubleQuote = false;
+
+          if (line.includes('""')) {
+            hasDoubleQuote = true;
+            line = line.replaceAll('""', '|');
+          }
+
           const match = line.match(/"([^"]*)"/);
 
           if (match) {
-            const name = match[1];
+            let name = match[1];
             const sanitizeName = line.replace('"' + name + '",', '');
             const data = sanitizeName.split(',');
 
             if (data[0] == 'Quantity' || backsideCards(name)) {
               continue;
+            }
+
+            if (hasDoubleQuote) {
+              name = name.replaceAll('|', '""');
             }
 
             const convertedData = {
@@ -633,6 +644,8 @@
           return 'NM';
         } else if (dragonShieldCondition == 'LightlyPlayed') {
           return 'LP';
+        } else if (dragonShieldCondition == 'Poor') {
+          return 'MP';
         } else if (dragonShieldCondition == 'HeavilyPlayed') {
           return 'HP';
         }
